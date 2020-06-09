@@ -1,0 +1,81 @@
+body
+{
+	background-color: #dad5c9;
+	perspective: 800px;
+	perspective-origin: center;
+}
+
+#score 						
+{
+	position: absolute;
+	top: -50px;
+	right: 100px;
+	font-family: sans-serif;
+}
+#score::after 								/* affiche le score actuel */
+{
+	content: attr(data-score);
+	position: absolute;
+	left: 110px;
+	top: 15px;
+	font-weight: bold;
+	font-size: 2em;
+	color: #770000;
+}
+
+
+#main 									/* conteneur principal */
+{
+	position: relative;
+	width: 67%;
+	margin: auto;
+	margin-top: 50px;
+	display: flex;
+	flex-wrap: wrap;
+}
+.mainBloc 													  /* sous conteneur, contient 2 div pour les 2 faces de la carte */
+{
+	position: relative;
+	width: 155px;
+	height: 115px;
+	margin: 6px;
+}
+.top, .bottom 											       /* cartes supérieures et inférieures */
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 15px;
+	box-shadow: 3px 3px 10px grey;
+	backface-visibility: hidden;
+	transition: 1s;
+}
+.top 															/* supérieures uniquement */
+{
+	background-image: url(img/connectwork.png);
+	z-index: 100;
+}
+.bottom															/* cartes inférieures, retournées à 180deg par défaut */
+{
+	background-color: #610000;
+	z-index: 10;
+	transform: rotateY(-180deg);
+}
+.bottom .img
+{
+	border-radius: 15px;
+}
+.clicked, .valide 												/* les images cliquées ou déjà validées sont retournées */
+{
+	transform: rotateY(180deg);
+}
+.clicked + .bottom 												/* replace la carte du dessous en position normale et montre l'image lorsque cliquée */
+{
+	transform: rotateY(0deg);
+}
+.valide + .bottom 												/* idem pour les cartes validées */
+{
+	transform: rotateY(0deg);
+}

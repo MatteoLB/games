@@ -1,0 +1,108 @@
+-> Tirage au sort et mise en place de quelques rangées de bulles de couleur aléatoire
+
+-> tirage au sort de 5 ou 6 bulles comme prochaines munitions
+
+-> shooter chargé = false par défaut, si false -> charger avec la prochaine munition dans la file puis en tirer une autre au sort
+
+-> canon dirigeable via flèches et souris : 
+	-> augmentation ou diminution des degrés via le clavier, même calcul que pour Ship (angle et sinus cosinus pour la dist X Y)
+	-> pour la souris, obtenir ses coordonnées actuelles et les comparer avec celles du canon pour obtenir la distance
+	   X et Y, à partir desquelles on peut soit mettre à l'échelle pour déterminer l'orientation du canon, soit calculer
+	   l'hypoténuse, puis l'angle, et effectuer le même calcul que pour une rotation via le clavier
+
+
+-> setInterval pour générer une nouvelle ligne de bulles toutes les X secondes si mode infini (sinon objectif serait finir le + vite,
+   ou munitions limitées et détruire le + de bulles possible) 
+-> SINON tous les X tirs -> simple compteur au lieu d'un intervalle
+
+-> eventlistener clavier souris pour gérer l'angle du canon, et eventlistener barre d'espace et/ou clic pour gérer les tirs
+
+
+TIRS
+
+-> lors du tir, calcul du déplacement via l'angle du canon, rebond en inversant X
+
+-> calcul de l'itinéraire complet (position de l'arrêt inclus) avant le début de l'animation?
+
+-> peut permettre de simplifier/raccourcir les calculs de détection puis déplacer de manière fluide
+
+
+
+DETECTION DES BULLES
+
+-> possibilité de diviser l'écran en 2, selon la position X vérifier de quel côté est la bulle et ne vérifier que les bulles
+   de ce côté ci (répértorier distinctement les bulles posées selon leur côté donc (si entre les 2, la mettre dans les 2)
+
+-> stocker la position X de la bulle la plus basse, à laquelle ajouter un diamètre+rayon par ex, pour ne vérifier les collisions
+   qu'une fois que la bulle tirée à atteint cette hauteur ?
+
+-> calculer distance absolue entre les coeurs des bulles, si distance totale = rayon x2 -> collision (totale étant H + V, pour ne pas
+   détecter que les contacts directement verticaux ou horizontaux, tenir compte des 3:7, -2:8, etc)
+
+-> passer en revue toutes les bulles à chaque déplacement ? seulement celles du côté correspondant ? diviser aussi en tranches
+   et pas simplement en colonnes ? les 2 ?
+
+
+-> SINON, fonctionner avec un système de cases, contenant chacune une liste (ou objet?) des bulles qu'elle contient (si il y en a)
+
+-> si une bulle déborde sur plusieurs cases, l'intégrer aux listes de toutes ces cases
+
+-> vérifier uniquement, à chaque déplacement, les bulles contenues dans les cases sur lesquelles se trouve la bulle tirée
+
+-> vérifier les bulles autour en calculant la distance absolue entre leurs coeurs (i et j * size + rayon (+ décalage selon les lignes))
+
+
+DETECTION DES CHUTES DE BULLES
+
+-> implique de savoir si un bloc de bulles est ou non relié au plafond (ou aux murs aussi?)
+
+-> stocker pour chaque bulle quelles bulles sont en contact avec elles? avoir un tableau contenant chaque bulle, chacune aura son index
+
+-> implique de ne pas retirer les bulles détruites dans ce tableau pour garder des index cohérents, mais implique donc pour chaque
+   bulle éclatée de la retirer de chaque liste des bulles en contact à laquelle elle appartenait
+
+-> SINON, créer un objet pour chaque bulle, permet de stocker simplement la couleur et position de la bulle, + celles en contact
+
+-> implique de créer à chaque nouvelle bulle un nouvel objet avec un nom différent et cohérent
+
+-> créer quand même une liste contenant tous les objets ?
+
+-> SINON créer un gros objet au lieu d'une liste, plutôt qu'un objet par bulle faire une propriété par bulle dans un objet
+
+
+
+******* CASE PAR CASE *******
+
+MINIMUM 3 bulles en contact avant de les faire éclater
+lignes paires décalées vers la gauche (marge de la taille du rayon d'une bulle à droite)
+lignes impaires décalées vers la droite (marge de la taille du rayon d'une bulle à gauche)
+
+->   A B C D E
+      A B C D E
+     A B C D E
+
+-> lignes paires reliées au bloc d'index X et X-1, soit la case du dessous et celle bas gauche, ou dessus et haut gauche
+-> inverse pour les lignes paires, X et X+1, soit case du dessous et bas droite ou dessus et haut droite
+-> + reliées aux cases à droite et à gauche sur la même ligne, soit jusqu'à 6 bulles en contact
+
+
+-> lors des déplacements, détecter la ou les cases traversées et si l'une d'elles est déjà occupée considérer qu'il y a collision?
+-> permet de passer à côté d'une bulle sans s'y coller (impossible si on détecte les cases adjacentes), mais si la bulle tirée
+   n'arrive pas par un angle, l'instant ou elle entre dans la case correspond au point d'impact, vérifier avant d'effectuer le
+   déplacement pour éviter de déborder?
+
+-> sinon, même système de détection qu'initialement prévu, détecter un contact avec une bulle plutôt qu'un contact avec sa case
+-> plus facile de cibler en fonctionnant par case, combiner les 2 en vérifiant les cases parcourues et voisines mais exiger un contact
+   entre les bulles avant de valider l'arrêt?
+
+   -> calculer la distance absolue entre leurs centres (i et j * size + rayon (+ décalage selon les lignes))
+
+
+-> lors d'un contact avec une autre bulle, ajuster les coordonnées de la bulle tirée pour la placer dans une case
+
+
+DETECTION DES BULLES A ECLATER
+
+-> idem que pour brick breaking? -> vérifier les bulles autour via le tableau (réutiliser checkAround() ou variante?)
+
+
